@@ -1,0 +1,33 @@
+Arquivo de entrada de materiais e condições de contorno para problemas de estado plano (linha livre para comentários)
+
+Dados Analise
+tipo_problema(EPT ou EPD) tipo_analise(estatica, modal ou transiente)
+
+Material
+nome_grupo_físico espessura mód._de_elasticidade coeficiente_Poisson densidade
+end
+
+C Contorno
+nome_grupo_físico direção(x=0, y=1, ambos=2) valor
+end
+
+F nodais
+nome_grupo_físico Fx Fy
+end
+
+F superficie
+nome_grupo_físico qxglobal qyglobal
+end
+
+F corpo
+nome_material gxglobal gyglobal
+end
+
+# os blocos abaixo só precisam estar presente na análise transiente
+C inicial desloc
+nó dx dy
+end
+
+C inicial vel
+nó vx vy
+end

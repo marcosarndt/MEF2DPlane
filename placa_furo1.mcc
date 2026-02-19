@@ -1,0 +1,32 @@
+Arquivo de entrada de materiais e condições de contorno para problemas de estado plano (linha livre para comentários)
+
+Dados Analise
+EPT estatica
+
+Material
+material1 1.0 210000 0.3 1.0
+end
+
+C Contorno
+fixox 0 0.0
+fixoy 1 0.0
+end
+
+F nodais
+end
+
+F superficie
+carga1 100. 0.
+end
+
+F corpo
+end
+
+# os blocos abaixo só precisam estar presente na análise transiente
+C inicial desloc
+nó dx dy
+end
+
+C inicial vel
+nó vx vy
+end

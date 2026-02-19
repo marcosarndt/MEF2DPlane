@@ -1,0 +1,22 @@
+Arquivo de entrada de materiais e condições de contorno para problemas de estado plano - TESTE
+
+Dados Analise
+EPT estatica
+
+Material
+material1 0.1 2.0e7 0.2 0.
+end
+
+C Contorno
+engaste 2 0. 0.
+end
+
+F nodais
+end
+
+F superficie
+carga1 0. -100.
+end
+
+F corpo
+end
