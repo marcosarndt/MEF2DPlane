@@ -193,13 +193,14 @@ def plot_contor2D(tipoe,coord,inci,result,text):
         triang = tri.Triangulation(coord[:,0], coord[:,1], inci[:,1:])
     else:
         if tipoe == 'quad':
-            triangles = []
+            inci_triang = []
             for i in range(inci.shape[0]):
                 # Triângulo 1: (n1, n2, n3)
-                triangles.append([inci[i,1], inci[i,2], inci[i,3]])
+                inci_triang.append([inci[i,1], inci[i,2], inci[i,3]])
                 # Triângulo 2: (n1, n3, n4)
-                triangles.append([inci[i,1], inci[i,3], inci[i,4]])
-            triangles = np.array(triangles)
+                inci_triang.append([inci[i,1], inci[i,3], inci[i,4]])
+            inci_triang = np.array(inci_triang)
+            triang = tri.Triangulation(coord[:,0], coord[:,1], inci_triang)
     contour = plt.tricontourf(triang, result, levels=levels, cmap=cmap_ansys)
     plt.title(text)
     plt.xlabel('X')

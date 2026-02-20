@@ -1,6 +1,6 @@
 # Leitura de arquivo .msh criado pelo Gmsh ou texto .mef e .loa. Montagem das matrizes de coordenadas nodais, incidência de elementos e materiais.
 # Listas de condições de contorno e carregamentos
-# Versão 4 - 21/11/2024
+# Versão 5 - 19/02/2026
 
 import numpy as np
 
@@ -32,7 +32,7 @@ def lista_nos(dados):
     nos = []
     for i in range(dados.shape[0]):
         for j in range(dados.shape[1]):
-            nos.append(dados[i,j])
+            nos.append(int(dados[i,j]))
     nos_sem_repeticao = list(set(nos))
     return(nos_sem_repeticao)
 
@@ -254,12 +254,12 @@ def read_mesh2D(path):
     coord = mesh.points
     nn = coord.shape[0]
     print(f'Coordenadas dos {nn} nós: {coord}')
-    # Obtenção das chaves da condições de contorno e seus números
+    # Obtenção das chaves das condições de contorno e seus números
     field_data = mesh.field_data
     list_cc = []
     for name in field_data.keys():
         numf = field_data[name]
-        list_cc.append([name,numf[0],numf[1]])
+        list_cc.append([name,int(numf[0]),int(numf[1])])
     # Obtenção da matriz de incidência e condições de contorno
     cells = mesh.cells
     gfisicos = mesh.cell_data['gmsh:physical']
