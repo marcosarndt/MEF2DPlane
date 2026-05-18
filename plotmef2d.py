@@ -127,16 +127,17 @@ def plot_transi(arquivo,gdl,variavel,metodo):
     return
 
 # PLotagem de malha 2D formada por elementos triangulares ou quadrilaterais
-def plot_malha2D(coord, inci):
-    plt.scatter(coord[:, 0], coord[:, 1], color='red')
-    for i in range(coord.shape[0]):
-        plt.annotate(f'{i}', xy=(coord[i,0], coord[i,1]), xytext=(3,3), textcoords='offset points', fontsize=8)
+def plot_malha2D(coord, inci, pltnnos=False):
+    plt.scatter(coord[:, 0], coord[:, 1], color='red', s=20)
+    if pltnnos == True:
+        for i in range(coord.shape[0]):
+            plt.annotate(f'{i}', xy=(coord[i,0], coord[i,1]), xytext=(3,3), textcoords='offset points', fontsize=8)
     for q in inci[:,1:]:
         plt.fill(coord[q,0], coord[q,1], edgecolor='blue', fill=False)
     plt.show()
     return
 
-# Plotagem da estrutura deformada e indeformada (Estado Plano)
+# Plotagem da estrutura deformada e indeformada (Estado Plano) com atualização por slider
 def plotdef2D(coord, inci, desloc):
     scale = 1.
     fig, ax = plt.subplots()
@@ -167,6 +168,23 @@ def plotdef2D(coord, inci, desloc):
         fig.canvas.draw_idle()
     # Conectando os sliders à função de atualização
     slider.on_changed(update)
+    # Apresentado o resultado
+    plt.show()
+    return
+
+# Plotagem da estrutura deformada e indeformada (Estado Plano) sem atualização por slider com fator de escala
+def plotdef2DX(coord, inci, desloc, escala):
+    scale = escala
+    fig, ax = plt.subplots()
+    plt.subplots_adjust(left=0.1, bottom=0.25)
+    defor = []
+    undefor = []
+    # Plotagem da estrutura indeformada
+    for q in inci[:,1:]:
+        undefor.append(ax.fill(coord[q,0], coord[q,1], edgecolor='blue', linestyle='--', fill=False))
+    # PLotagem da estrutura deformada
+    for q in inci[:,1:]:
+        defor.append(ax.fill(coord[q,0] + desloc[2*q]*scale, coord[q,1] + desloc[2*q+1]*scale, edgecolor='red', fill=False))               
     # Apresentado o resultado
     plt.show()
     return

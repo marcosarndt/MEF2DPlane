@@ -130,7 +130,7 @@ def read_load(arquivo):
         while linha != 'Dados Analise\n':
             linha = (file.readline())
         linha = (file.readline())
-        tp = linha.split()
+        tp = linha.split() # tp contém tipo de problema 2D (EPT ou EPD) e tipo de análise (estatica, modal ou transiente)
         while linha != 'Material\n':
             linha = (file.readline())
         mat = []
