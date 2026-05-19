@@ -250,10 +250,13 @@ def read_mesh2D(path):
     # Dados da malha gmsh
     import meshio
     mesh = meshio.read(path + '.msh')
+    # Abre arquivo de log
+    arq_log = open(path + '.log', 'w', encoding='utf-8')
+    arq_log.write('Leitura da malha Gmsh\n')
     # Obtenção da matriz de coordenadas nodais
     coord = mesh.points
     nn = coord.shape[0]
-    print(f'Coordenadas dos {nn} nós: {coord}')
+    arq_log.write(f'Coordenadas dos {nn} nós:\n {coord}\n')
     # Obtenção das chaves das condições de contorno e seus números
     field_data = mesh.field_data
     list_cc = []
@@ -291,14 +294,17 @@ def read_mesh2D(path):
                     condc[j[0]] = [cell_block.type,cell_block.data]   
         i += 1
     ne = inci.shape[0]
-    print(f'Incidência dos {ne} elementos do tipo {elemtype}: {inci}')
-    print(f'Materiais: {material}')
-    print(f'Condições de contorno: {condc}')
+    arq_log.write(f'Incidência dos {ne} elementos do tipo {elemtype}:\n {inci}\n')
+    arq_log.write(f'Materiais:\n {material}\n')
+    arq_log.write(f'Condições de contorno:\n {condc}\n')
+    arq_log.close()
     return(coord,inci,elemtype,material,condc)
 
 # Leitura de materiais, condições de contorno (apoios e carregamentos) e informações sobre a análise
 # de problemas de estado plano de arquivo texto com extensão .mcc
 def read_mccEP(path,lista_mat,condc,ngl,coord):
+    arq_log = open(path + '.log', 'a', encoding='utf-8')
+    arq_log.write('\nLeitura do arquivo MCC\n')
     try:
         file = open(path + '.mcc', 'r', encoding='utf-8')
         linha = (file.readline())
@@ -306,6 +312,7 @@ def read_mccEP(path,lista_mat,condc,ngl,coord):
             linha = (file.readline())
         linha = (file.readline())
         tp = linha.split()
+        arq_log.write(f'Tipo de análise: {tp}\n')
         while linha != 'Material\n':
             linha = (file.readline())
         mat = {}
@@ -318,8 +325,8 @@ def read_mccEP(path,lista_mat,condc,ngl,coord):
         for chave in lista_mat:
             list_mat.append(mat[chave])
         materiais = np.array(list_mat)
-        print(materiais)
-        print(f'A matriz de materiais possui {materiais.shape[0]} linhas e {materiais.shape[1]} colunas.')
+        arq_log.write(f'Materiais:\n {materiais}\n')
+        arq_log.write(f'A matriz de materiais possui {materiais.shape[0]} linhas e {materiais.shape[1]} colunas.\n')
         while linha != 'C Contorno\n':
             linha = (file.readline())
         contorno = []
@@ -354,7 +361,9 @@ def read_mccEP(path,lista_mat,condc,ngl,coord):
             linha = file.readline()
         contorno = list(set(contorno))
         # A lista contorno contém os graus de liberdade prescritos
+        arq_log.write(f'Graus de liberdade prescritos:\n {contorno}\n')
         # O vetor desl contém os deslocamentos prescritos e os demais nulos
+        arq_log.write(f'Deslocamentos:\n {desl}\n')
         force = np.zeros((ngl))
         while linha != 'F nodais\n':
             linha = (file.readline())
@@ -386,8 +395,10 @@ def read_mccEP(path,lista_mat,condc,ngl,coord):
                     force[noj*2+1] += qy * aresta / 2
             linha = file.readline()
         # O vetor force até aqui contém as forças nodais e de superfícies relacionadas a cada grau de liberdade
+        arq_log.write(f'Vetor de forças:\n {force}\n')
     except IOError:
-        print(f'Não foi possível abrir o arquivo!')
+        arq_log.write(f'Não foi possível abrir o arquivo!\n')
     else:
         file.close()
+    arq_log.close()
     return(tp,materiais,contorno,desl,force)

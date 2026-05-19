@@ -596,12 +596,15 @@ if (dados_analise[1] == 'modal') or (dados_analise[1] == 'transiente'):
 Fl = Ford[:dim]
 print(Fl)
 
+# Abrindo arquivo de resultados (.res)
+arq_res = open(arquivo + '.sol', 'w', encoding='utf-8')
+arq_res.write('Resultados\n')
 if dados_analise[1] == 'estatica':
     # Solução estática
     dl = linalg.solve(K,Fl - np.dot(Kgord[:dim,dim:],dord[dim:]))
     for i in range(dim):
         d[ordem[i]] = dl[i]
-    print (f'Deslocamentos: {d}')
+    arq_res.write (f'Deslocamentos:\n {d}\n')
     Ux = np.zeros((nnos)) # Deslocamentos na direção x
     Uy = np.zeros((nnos)) # Deslocamentos na direção y
     for i in range(nnos):
@@ -662,14 +665,14 @@ if dados_analise[1] == 'modal' or (dados_analise[1] == 'transiente' and float(da
     # Solução modal
     autovalores, autovetores = linalg.eigh(K, M)
     freq = autovalores ** (1/2)
-    print(f'Frequências: {freq}')
+    arq_res.write(f'Frequências:\n {freq}\n')
     # Normalização dos modos em relação à massa
     Mmodal = np.array(autovetores)
     modo = []
     for i in range(dim):
         Mn = np.dot(np.transpose(Mmodal[:,i]),np.dot(M,Mmodal[:,i]))
         modo.append(1/(Mn**(1/2)) * Mmodal[:,i])
-        # print(f'Modo {i}: {modo[i]}')
+        arq_res.write(f'Modo {i}:\n {modo[i]}\n')
     resp = 'S'
     while resp == 's' or resp == 'S':
         resp = input('Deseja plotar algum modo de vibração da estrutura (S ou N)? ')
@@ -726,3 +729,4 @@ if dados_analise[1] == 'transiente':
                 pltmef.plot_transi(arquivo,indice,var,met_int)
             except ValueError: 
                 print(f'O grau de liberdade é restrito.')
+arq_res.close()
